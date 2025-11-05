@@ -48,7 +48,7 @@ h1 {
   
   /* Izgara (Grid) Düzeni: 3 Sütun */
   display: grid;
-  grid-template-columns: 2fr 1.5fr 1fr; /* Sütun genişlikleri (Semboller | Ayarlar | Buton) */
+  grid-template-columns: 2fr 1.7fr 1fr; /* Sütun genişlikleri (Semboller | Ayarlar | Buton) */
   grid-template-areas: "symbols settings action"; /* Sütunlara isim verdik */
   gap: 25px;
   align-items: start; /* Sütunları üste hizala */
@@ -232,4 +232,104 @@ p[style*="color: red"] {
 .recharts-tooltip-wrapper .recharts-tooltip-label {
   color: #fff !important;
   margin-bottom: 5px !important;
+}
+
+/* ... (mevcut css kodunun en altına ekle) ... */
+
+/* "Tümünü Seç / Temizle" butonları için */
+.select-all-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.select-all-buttons button {
+  flex: 1; /* Butonlar eşit genişlikte olsun */
+  padding: 8px;
+  font-size: 0.7em;
+  background-color: #555;
+  color: #fff;
+  height: auto; /* Ana butonun yüksekliğini ez */
+}
+
+.select-all-buttons button:hover {
+  background-color: #666;
+  transform: none; /* Ana butonun scale efektini ez */
+}
+
+/* Ana "Göster" butonunu grid alanına yerleştir (zaten yapılıyordu ama daha belirgin hale getirelim) */
+.show-charts-button {
+  grid-area: action;
+  align-self: center;
+}
+
+/* Tablo Konteyneri */
+.table-container {
+  width: 100%;
+  height: 100%; /* ResponsiveContainer'ın yüksekliğini doldur */
+  display: flex;
+  flex-direction: column;
+  padding-top: 15px; /* Üstteki grafikten ayırmak için */
+}
+
+.table-container h4 {
+  color: #ccc;
+  border-bottom: 1px solid #555;
+  padding-bottom: 10px;
+  margin-top: 0;
+  text-align: left; /* Başlığı sola al */
+}
+
+/* Tablonun kaydırılabilir alanı */
+.table-scroll {
+  flex-grow: 1; /* Kalan tüm yüksekliği doldur */
+  overflow-y: auto; /* Dikey kaydırma çubuğu */
+  background-color: #282c34;
+  border-radius: 4px;
+}
+
+/* HTML Tablosu */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse; /* Çizgileri birleştir */
+  font-size: 0.8em;
+}
+
+/* Tablo Başlıkları (TH) */
+.table-container th {
+  background-color: #333;
+  color: #61dafb; /* React Mavisi */
+  padding: 12px 15px; /* Padding'i artırdık */
+  text-align: left; /* Başlıklar sola hizalı */
+  position: sticky; /* Kaydırırken başlıklar üstte sabit kalsın */
+  top: 0;
+  z-index: 1; /* Diğer satırların üstünde kalmasını garantile */
+}
+
+/* Tablo Hücreleri (TD) */
+.table-container td {
+  padding: 12px 15px; /* TH ile aynı padding */
+  border-bottom: 1px solid #444;
+  text-align: left; /* <<< HİZALAMA DÜZELTMESİ: Hücreler de sola hizalı */
+}
+
+.table-container tr:nth-child(even) {
+  background-color: #2f343d; /* Hafif ton farkı */
+}
+
+.table-container tr:hover {
+  background-color: #4a4f5a;
+}
+
+/* Sayısal verileri (Fiyat, Güven) sağa hizala */
+.table-container th:nth-child(3),
+.table-container td:nth-child(3),
+.table-container th:nth-child(4),
+.table-container td:nth-child(4) {
+  text-align: right;
+}
+
+/* Sinyal sütununu ortala (daha iyi görünebilir) */
+.table-container th:nth-child(2),
+.table-container td:nth-child(2) {
+  text-align: center;
 }

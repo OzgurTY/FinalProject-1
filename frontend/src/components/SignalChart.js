@@ -1,33 +1,30 @@
 import React from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+    LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush
 } from 'recharts';
+import SignalTable from './SignalTable';
 
 // AL/SAT/TUT sinyallerini göstermek için özel nokta (dot) bileşeni
 const CustomizedDot = (props) => {
     const { cx, cy, payload } = props;
+    if (!payload) return null;
 
-    // Veri noktasındaki (payload) sinyal tipine bak
     switch (payload.signal) {
         case 'BUY':
-            // AL sinyali için yeşil bir üçgen (yukarı ok) çiz
             return (
                 <svg x={cx - 7} y={cy - 7} width="14" height="14" fill="#52D017" viewBox="0 0 1024 1024">
                     <path d="M512 96l448 704H64z" />
                 </svg>
             );
         case 'SELL':
-            // SAT sinyali için kırmızı bir üçgen (aşağı ok) çiz
             return (
                 <svg x={cx - 7} y={cy - 7} width="14" height="14" fill="#E41B17" viewBox="0 0 1024 1024">
                     <path d="M512 928L64 224h896z" />
                 </svg>
             );
         case 'HOLD':
-            // TUT sinyali için küçük gri bir daire
             return <circle cx={cx} cy={cy} r={3} fill="#808080" />;
         default:
-            // Sinyal yoksa (veya farklı bir şeyse) bir şey çizme
             return null;
     }
 };
@@ -35,17 +32,32 @@ const CustomizedDot = (props) => {
 // Tooltip'in (üzerine gelince çıkan kutu) içeriğini formatlamak için
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-        const data = payload[0].payload;
-        const date = new Date(data.ts).toLocaleString();
+        // Hem fiyat (Line) hem de hacim (Bar) verisi payload içinde olabilir
+        const priceData = payload.find(p => p.dataKey === 'price');
+        const buyData = payload.find(p => p.dataKey === 'buy');
+        const sellData = payload.find(p => p.dataKey === 'sell');
+
+        // Veri noktasını bul (priceData öncelikli)
+        const data = priceData ? priceData.payload : (buyData ? buyData.payload : null);
+        if (!data) return null;
+
+        const date = new Date(data.ts || data.bucket).toLocaleString(); // 'ts' (fiyat) veya 'bucket' (hacim) olabilir
+
         return (
             <div style={{ backgroundColor: '#222', padding: '10px', border: '1px solid #555', borderRadius: '5px' }}>
                 <p style={{ color: '#fff' }}>{`Tarih: ${date}`}</p>
-                <p style={{ color: '#8884d8' }}>{`Fiyat: ${data.price}`}</p>
-                {data.signal !== 'HOLD' && (
+
+                {/* Fiyatı veya Sinyali göster */}
+                {data.price && <p style={{ color: '#8884d8' }}>{`Fiyat: ${data.price}`}</p>}
+                {data.signal && data.signal !== 'HOLD' && (
                     <p style={{ color: data.signal === 'BUY' ? '#52D017' : '#E41B17' }}>
                         {`Sinyal: ${data.signal}`}
                     </p>
                 )}
+
+                {/* Hacim verisini göster */}
+                {data.buy > 0 && <p style={{ color: '#82ca9d' }}>{`Al Hacmi: ${data.buy}`}</p>}
+                {data.sell > 0 && <p style={{ color: '#ca8282' }}>{`Sat Hacmi: ${data.sell}`}</p>}
             </div>
         );
     }
@@ -59,55 +71,106 @@ const formatXAxis = (ts) => {
 };
 
 // Ana Grafik Bileşeni
-// Bu bileşen 'symbol' (başlık için) ve 'data' (çizim için) prop'larını alır
-const SignalChart = ({ symbol, data }) => {
+// Artık 'priceData' ve 'volumeData' alıyor
+const SignalChart = ({ symbol, priceData, volumeData }) => {
+
+    if (!priceData || priceData.length === 0) {
+        return (
+            <div style={{ width: '100%', height: 350, backgroundColor: '#3a3f4a', padding: '20px', borderRadius: '8px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ textAlign: 'center' }}>
+                    <h3 style={{ color: '#fff', margin: 0 }}>{symbol}</h3>
+                    <p style={{ color: '#ccc', fontStyle: 'italic', marginTop: '10px' }}>
+                        Seçilen kriterler için sinyal verisi bulunamadı.
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    const volumeMap = new Map();
+    volumeData.forEach(bucket => {
+        volumeMap.set(bucket.ts, { buy: bucket.buy, sell: bucket.sell });
+    });
+
     return (
-        <div style={{ width: '100%', height: 350, backgroundColor: '#282c34', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-            <h3 style={{ color: '#fff', textAlign: 'left', marginLeft: '20px' }}>{symbol} Fiyat Grafiği ve Sinyaller</h3>
-            <ResponsiveContainer width="100%" height="100%">
+        <div style={{ width: '100%', height: 500, backgroundColor: '#3a3f4a', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
+            <h3 style={{ color: '#fff', textAlign: 'left', marginLeft: '20px' }}>{symbol} Fiyat Grafiği ve Sinyal Hacmi</h3>
+
+            {/* FİYAT GRAFİĞİ (ÜSTTE) */}
+            <ResponsiveContainer width="100%" height="65%">
                 <LineChart
-                    data={data}
-                    margin={{ top: 5, right: 30, left: 20, bottom: 20 }} // Alt boşluğu artırdık
+                    data={priceData} // Sadece fiyat verisini kullan
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    syncId={`chart-${symbol}`}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#555" />
-
-                    {/* X Ekseni (Zaman) */}
                     <XAxis
-                        dataKey="ts" // Verideki zaman damgası
+                        dataKey="ts"
                         stroke="#ccc"
-                        tickFormatter={formatXAxis} // Zamanı formatla
-
-                        // --- YENİ EKLENEN SATIRLAR ---
-                        interval="auto" // Etiketlerin üst üste binmesini otomatik engelle
-                        minTickGap={40}   // Etiketler arası minimum 40px boşluk bırak
-                        // --- BİTTİ ---
-
-                        label={{ value: "", position: "insideBottom", offset: -15, fill: '#ccc', dy: 10 }} // dy eklendi
+                        tickFormatter={formatXAxis}
+                        interval="auto"
+                        minTickGap={60}
+                        hide={true}
                     />
-
-                    {/* Y Ekseni (Fiyat) */}
                     <YAxis
-                        dataKey="price" // Verideki fiyat
+                        dataKey="price"
                         stroke="#ccc"
-                        domain={['auto', 'auto']} // Fiyat aralığını otomatik ayarla
-                        label={{ value: '', angle: -90, position: 'insideLeft', fill: '#ccc' }}
+                        domain={['auto', 'auto']}
+                        label={{ value: 'Fiyat', angle: -90, position: 'insideLeft', fill: '#ccc', dx: -10 }}
                     />
-
-                    {/* Üzerine gelince çıkan Tooltip */}
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
-
-                    {/* Fiyat Çizgisi */}
                     <Line
                         type="monotone"
                         dataKey="price"
                         stroke="#8884d8"
                         strokeWidth={2}
                         name="Fiyat"
-                        activeDot={<CustomizedDot />} // Aktif nokta (tıklanınca/yaklaşınca) sinyal ikonu
-                        dot={<CustomizedDot />} // Her nokta için sinyal ikonunu göster
+                        activeDot={<CustomizedDot />}
+                        dot={<CustomizedDot />}
                     />
                 </LineChart>
+            </ResponsiveContainer>
+
+            {/* HACİM GRAFİĞİ (ALTTA) */}
+            <ResponsiveContainer width="100%" height="30%">
+                <BarChart
+                    data={volumeData} // Sadece hacim verisini kullan
+                    margin={{ top: 5, right: 30, left: 20, bottom: 20 }}
+                    syncId={`chart-${symbol}`}
+                >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#555" />
+                    <XAxis
+                        dataKey="ts" // App.js'de 'ts' olarak dönüştürdük
+                        stroke="#ccc"
+                        tickFormatter={formatXAxis}
+                        interval="auto"
+                        minTickGap={60}
+                        label={{ value: "Tarih", position: "insideBottom", offset: -15, fill: '#ccc', dy: 10 }}
+                    />
+                    <YAxis
+                        stroke="#ccc"
+                        label={{ value: 'Hacim', angle: -90, position: 'insideLeft', fill: '#ccc', dx: -10 }}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="buy" fill="#82ca9d" name="Al Hacmi" />
+                    <Bar dataKey="sell" fill="#ca8282" name="Sat Hacmi" />
+                    <Brush
+                        dataKey="ts"
+                        height={30}
+                        stroke="#61dafb"
+                        fill="rgba(40, 44, 52, 0.5)"
+                        tickFormatter={formatXAxis}
+                    // `priceData`'yı baz alarak kaydırma yap (en yoğun veri)
+                    // (Bu kısım için `volumeData`'nın `ts`'sini kullanmak daha iyi)
+                    />
+                </BarChart>
+            </ResponsiveContainer>
+
+            {/* SİNYAL TABLOSU (ALTTA) - %35 yükseklik */}
+            <ResponsiveContainer width="100%" height="35%">
+                <SignalTable data={priceData} />
             </ResponsiveContainer>
         </div>
     );
