@@ -6,12 +6,15 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34; /* Ana arka plan rengi */
+  background-color: #282c34;
+  /* Ana arka plan rengi */
   color: white;
 }
 
 /* Tüm elemanlar için daha iyi kutu hesaplaması */
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
 
@@ -26,7 +29,8 @@ body {
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
-  font-size: calc(10px + 1.5vmin); /* Yazı tipini biraz küçülttük */
+  font-size: calc(10px + 1.5vmin);
+  /* Yazı tipini biraz küçülttük */
   color: white;
 }
 
@@ -40,33 +44,40 @@ h1 {
 /* Filtre alanının ana konteyneri */
 .filter-container {
   width: 90%;
-  max-width: 1200px;
+  max-width: 1400px;
   padding: 20px;
   background-color: #3a3f4a;
   border-radius: 8px;
   margin-bottom: 30px;
-  
+
   /* Izgara (Grid) Düzeni: 3 Sütun */
   display: grid;
-  grid-template-columns: 2fr 1.7fr 1fr; /* Sütun genişlikleri (Semboller | Ayarlar | Buton) */
-  grid-template-areas: "symbols settings action"; /* Sütunlara isim verdik */
+  grid-template-columns: 2fr 1.7fr 1fr;
+  /* Sütun genişlikleri (Semboller | Ayarlar | Buton) */
+  grid-template-areas: "symbols settings action";
+  /* Sütunlara isim verdik */
   gap: 25px;
-  align-items: start; /* Sütunları üste hizala */
+  align-items: start;
+  /* Sütunları üste hizala */
 }
 
 /* Küçük ekranlarda (tablet/mobil) düzeni değiştir */
 @media (max-width: 900px) {
   .filter-container {
-    grid-template-columns: 1fr 1fr; /* 2 sütun */
-    grid-template-areas: 
+    grid-template-columns: 1fr 1fr;
+    /* 2 sütun */
+    grid-template-areas:
       "symbols settings"
-      "action  action"; /* Buton tam genişlikte altta */
+      "action  action";
+    /* Buton tam genişlikte altta */
   }
 }
+
 @media (max-width: 600px) {
   .filter-container {
-    grid-template-columns: 1fr; /* Tek sütun */
-    grid-template-areas: 
+    grid-template-columns: 1fr;
+    /* Tek sütun */
+    grid-template-areas:
       "symbols"
       "settings"
       "action";
@@ -74,9 +85,17 @@ h1 {
 }
 
 /* fieldset'leri grid alanlarına yerleştir */
-.filter-group:nth-of-type(1) { grid-area: symbols; }
-.filter-group:nth-of-type(2) { grid-area: settings; }
-.filter-container > button      { grid-area: action; }
+.filter-group:nth-of-type(1) {
+  grid-area: symbols;
+}
+
+.filter-group:nth-of-type(2) {
+  grid-area: settings;
+}
+
+.filter-container>button {
+  grid-area: action;
+}
 
 
 /* Filtre grupları (Semboller ve Ayarlar) */
@@ -84,19 +103,22 @@ h1 {
   border: 1px solid #555;
   border-radius: 5px;
   padding: 10px 15px;
-  margin: 0; /* Tarayıcının varsayılan margin'ini sıfırla */
+  margin: 0;
+  /* Tarayıcının varsayılan margin'ini sıfırla */
   display: flex;
   flex-direction: column;
   gap: 15px;
   min-width: 200px;
-  height: 100%; /* Sütun yüksekliğini doldur */
+  height: 100%;
+  /* Sütun yüksekliğini doldur */
 }
 
 .filter-group legend {
   padding: 0 10px;
   font-size: 0.9em;
   font-weight: bold;
-  color: #61dafb; /* React mavisi */
+  color: #61dafb;
+  /* React mavisi */
 }
 
 /* Ayarlar grubundaki label'lar (Model, Başlangıç, Bitiş) */
@@ -112,12 +134,14 @@ h1 {
 .checkbox-group {
   display: flex;
   flex-direction: column;
-  max-height: 200px; /* Liste yüksekliği */
+  max-height: 200px;
+  /* Liste yüksekliği */
   overflow-y: auto;
   text-align: left;
   gap: 8px;
   padding: 5px;
-  background-color: #282c34; /* İç arka plan */
+  background-color: #282c34;
+  /* İç arka plan */
   border-radius: 4px;
 }
 
@@ -146,28 +170,33 @@ input[type="checkbox"] {
 .checkbox-group::-webkit-scrollbar {
   width: 8px;
 }
+
 .checkbox-group::-webkit-scrollbar-track {
   background: #282c34;
   border-radius: 4px;
 }
+
 .checkbox-group::-webkit-scrollbar-thumb {
   background-color: #555;
   border-radius: 4px;
 }
+
 .checkbox-group::-webkit-scrollbar-thumb:hover {
   background-color: #61dafb;
 }
 
 
 /* Input ve Select Stilleri */
-select, input[type="date"] {
+select,
+input[type="date"] {
   padding: 8px 10px;
   background-color: #fff;
   border: none;
   border-radius: 4px;
   font-size: 0.9em;
   width: 100%;
-  max-width: 200px; /* Ayar input'larının genişliğini sabitle */
+  max-width: 200px;
+  /* Ayar input'larının genişliğini sabitle */
 }
 
 /* Ana Buton Stili */
@@ -182,7 +211,8 @@ button {
   cursor: pointer;
   width: 100%;
   height: 50px;
-  align-self: center; /* Grid hücresinde ortala */
+  align-self: center;
+  /* Grid hücresinde ortala */
   transition: transform 0.1s, background-color 0.2s;
 }
 
@@ -203,10 +233,12 @@ button:disabled {
 }
 
 /* Hata ve Yükleme Mesajları */
-.chart-area p, .App-header > p {
+.chart-area p,
+.App-header>p {
   color: #ccc;
   font-style: italic;
 }
+
 p[style*="color: red"] {
   font-style: normal;
   font-weight: bold;
@@ -216,7 +248,7 @@ p[style*="color: red"] {
 /* --- Grafik Alanı Stilleri --- */
 .chart-area {
   width: 90%;
-  max-width: 1200px;
+  max-width: 1400px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -229,6 +261,7 @@ p[style*="color: red"] {
   border-radius: 5px !important;
   color: #fff !important;
 }
+
 .recharts-tooltip-wrapper .recharts-tooltip-label {
   color: #fff !important;
   margin-bottom: 5px !important;
@@ -243,17 +276,20 @@ p[style*="color: red"] {
 }
 
 .select-all-buttons button {
-  flex: 1; /* Butonlar eşit genişlikte olsun */
+  flex: 1;
+  /* Butonlar eşit genişlikte olsun */
   padding: 8px;
   font-size: 0.7em;
   background-color: #555;
   color: #fff;
-  height: auto; /* Ana butonun yüksekliğini ez */
+  height: auto;
+  /* Ana butonun yüksekliğini ez */
 }
 
 .select-all-buttons button:hover {
   background-color: #666;
-  transform: none; /* Ana butonun scale efektini ez */
+  transform: none;
+  /* Ana butonun scale efektini ez */
 }
 
 /* Ana "Göster" butonunu grid alanına yerleştir (zaten yapılıyordu ama daha belirgin hale getirelim) */
@@ -265,24 +301,30 @@ p[style*="color: red"] {
 /* Tablo Konteyneri */
 .table-container {
   width: 100%;
-  height: 100%; /* ResponsiveContainer'ın yüksekliğini doldur */
+  height: 100%;
+  /* ResponsiveContainer'ın yüksekliğini doldur */
   display: flex;
   flex-direction: column;
-  padding-top: 15px; /* Üstteki grafikten ayırmak için */
+  padding-top: 15px;
+  /* Üstteki grafikten ayırmak için */
 }
 
+/* Tablo Başlığı (h4) */
 .table-container h4 {
   color: #ccc;
   border-bottom: 1px solid #555;
   padding-bottom: 10px;
   margin-top: 0;
-  text-align: left; /* Başlığı sola al */
+  text-align: left;
+  /* Başlığı sola al */
 }
 
 /* Tablonun kaydırılabilir alanı */
 .table-scroll {
-  flex-grow: 1; /* Kalan tüm yüksekliği doldur */
-  overflow-y: auto; /* Dikey kaydırma çubuğu */
+  flex-grow: 1;
+  /* Kalan tüm yüksekliği doldur */
+  overflow-y: auto;
+  /* Dikey kaydırma çubuğu */
   background-color: #282c34;
   border-radius: 4px;
 }
@@ -290,46 +332,56 @@ p[style*="color: red"] {
 /* HTML Tablosu */
 .table-container table {
   width: 100%;
-  border-collapse: collapse; /* Çizgileri birleştir */
+  border-collapse: collapse;
+  /* Çizgileri birleştir */
   font-size: 0.8em;
 }
 
 /* Tablo Başlıkları (TH) */
 .table-container th {
   background-color: #333;
-  color: #61dafb; /* React Mavisi */
-  padding: 12px 15px; /* Padding'i artırdık */
-  text-align: left; /* Başlıklar sola hizalı */
-  position: sticky; /* Kaydırırken başlıklar üstte sabit kalsın */
+  color: #61dafb;
+  /* React Mavisi */
+  padding: 12px 15px;
+  text-align: left;
+  /* Başlıklar sola hizalı */
+  position: sticky;
+  /* Kaydırırken başlıklar üstte sabit kalsın */
   top: 0;
-  z-index: 1; /* Diğer satırların üstünde kalmasını garantile */
+  z-index: 1;
 }
 
 /* Tablo Hücreleri (TD) */
 .table-container td {
-  padding: 12px 15px; /* TH ile aynı padding */
+  padding: 12px 15px;
   border-bottom: 1px solid #444;
-  text-align: left; /* <<< HİZALAMA DÜZELTMESİ: Hücreler de sola hizalı */
+  text-align: left;
+  /* <<< EKSİK OLAN VE HİZALAMAYI DÜZELTEN KURAL */
 }
 
 .table-container tr:nth-child(even) {
-  background-color: #2f343d; /* Hafif ton farkı */
+  background-color: #2f343d;
+  /* Hafif ton farkı */
 }
 
 .table-container tr:hover {
   background-color: #4a4f5a;
 }
 
-/* Sayısal verileri (Fiyat, Güven) sağa hizala */
+/* --- OKUNABİLİRLİK İYİLEŞTİRMELERİ --- */
+
+/* 1. Sütun (Tarih) - Sola hizalı kalsın (varsayılan) */
+
+/* 2. Sütun (Sinyal) - Ortala */
+.table-container th:nth-child(2),
+.table-container td:nth-child(2) {
+  text-align: center;
+}
+
+/* 3. ve 4. Sütunlar (Fiyat, Güven) - Sağa hizala (sayısal) */
 .table-container th:nth-child(3),
 .table-container td:nth-child(3),
 .table-container th:nth-child(4),
 .table-container td:nth-child(4) {
   text-align: right;
-}
-
-/* Sinyal sütununu ortala (daha iyi görünebilir) */
-.table-container th:nth-child(2),
-.table-container td:nth-child(2) {
-  text-align: center;
 }

@@ -168,10 +168,10 @@ const SignalChart = ({ symbol, priceData, volumeData }) => {
                 </BarChart>
             </ResponsiveContainer>
 
-            {/* SİNYAL TABLOSU (ALTTA) - %35 yükseklik */}
+            {/* SİNYAL TABLOSU (ALTTA) - %35 yükseklik
             <ResponsiveContainer width="100%" height="35%">
                 <SignalTable data={priceData} />
-            </ResponsiveContainer>
+            </ResponsiveContainer> */}
         </div>
     );
 };
