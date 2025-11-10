@@ -4,7 +4,6 @@ import {
 } from 'recharts';
 import SignalTable from './SignalTable';
 
-// AL/SAT/TUT sinyallerini göstermek için özel nokta (dot) bileşeni
 const CustomizedDot = (props) => {
     const { cx, cy, payload } = props;
     if (!payload) return null;
@@ -29,15 +28,12 @@ const CustomizedDot = (props) => {
     }
 };
 
-// Tooltip'in (üzerine gelince çıkan kutu) içeriğini formatlamak için
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-        // Hem fiyat (Line) hem de hacim (Bar) verisi payload içinde olabilir
         const priceData = payload.find(p => p.dataKey === 'price');
         const buyData = payload.find(p => p.dataKey === 'buy');
         const sellData = payload.find(p => p.dataKey === 'sell');
 
-        // Veri noktasını bul (priceData öncelikli)
         const data = priceData ? priceData.payload : (buyData ? buyData.payload : null);
         if (!data) return null;
 
@@ -64,14 +60,11 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-// Zaman damgasını (timestamp) X ekseni için "gün/ay" olarak formatlar
 const formatXAxis = (ts) => {
     const date = new Date(ts);
     return `${date.getDate()}/${date.getMonth() + 1}`;
 };
 
-// Ana Grafik Bileşeni
-// Artık 'priceData' ve 'volumeData' alıyor
 const SignalChart = ({ symbol, priceData, volumeData }) => {
 
     if (!priceData || priceData.length === 0) {
@@ -135,13 +128,13 @@ const SignalChart = ({ symbol, priceData, volumeData }) => {
             {/* HACİM GRAFİĞİ (ALTTA) */}
             <ResponsiveContainer width="100%" height="30%">
                 <BarChart
-                    data={volumeData} // Sadece hacim verisini kullan
+                    data={volumeData}
                     margin={{ top: 5, right: 30, left: 20, bottom: 20 }}
                     syncId={`chart-${symbol}`}
                 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#555" />
                     <XAxis
-                        dataKey="ts" // App.js'de 'ts' olarak dönüştürdük
+                        dataKey="ts"
                         stroke="#ccc"
                         tickFormatter={formatXAxis}
                         interval="auto"
