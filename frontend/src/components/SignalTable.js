@@ -1,6 +1,5 @@
 import React from 'react';
 
-// Tablonun stilini belirleyecek yardımcı fonksiyon
 const getSignalStyle = (signal) => {
     if (signal === 'BUY') {
         return { color: '#52D017', fontWeight: 'bold' };
@@ -12,11 +11,10 @@ const getSignalStyle = (signal) => {
 };
 
 const SignalTable = ({ data }) => {
-    // Sadece AL (BUY) veya SAT (SELL) sinyallerini filtrele
-    // ve en yeniden en eskiye doğru sırala (tabloda genelde en yeni üstte olur)
+
     const filteredData = data
         .filter(item => item.signal === 'BUY' || item.signal === 'SELL')
-        .sort((a, b) => b.ts - a.ts); // ts zaten timestamp (sayı)
+        .sort((a, b) => b.ts - a.ts);
 
     if (filteredData.length === 0) {
         return (
