@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         const data = priceData ? priceData.payload : (buyData ? buyData.payload : null);
         if (!data) return null;
 
-        const date = new Date(data.ts || data.bucket).toLocaleString(); // 'ts' (fiyat) veya 'bucket' (hacim) olabilir
+        const date = new Date(data.ts || data.bucket).toLocaleString();
 
         return (
             <div style={{ backgroundColor: '#222', padding: '10px', border: '1px solid #555', borderRadius: '5px' }}>
